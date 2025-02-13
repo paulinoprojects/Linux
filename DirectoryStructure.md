@@ -40,4 +40,3 @@ This is the top-level directory, like the main drawer in your filing cabinet. Ev
 *   Use the `ls` command to list files in a directory (e.g., `ls -l` for a detailed list).  Like looking at what's inside a drawer.
 *   Don't be afraid to explore, but be careful when making changes, especially in system directories.  Be careful when rearranging your filing cabinet!
 
-If you have any more questions or want to dive deeper into a specific directory, just let me know!
