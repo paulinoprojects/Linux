@@ -1,0 +1,135 @@
+# Managing Users, Groups, and Permissions in Linux: A Step-by-Step Guide
+
+This guide provides a comprehensive walkthrough of user and group management, file permissions, and account switching in Linux.
+
+## 1. Creating Users
+
+*   **`useradd` command:** Used to create new user accounts.
+
+    ```bash
+    sudo useradd username
+    ```
+
+    Replace `username` with the desired username.  This creates the account but *doesn't* set a password.
+
+*   **`passwd` command:** Sets the user's password.
+
+    ```bash
+    sudo passwd username
+    ```
+
+    You'll be prompted to enter the new password twice.
+
+*   **Important Options:**
+
+    *   `-m`: Creates the user's home directory (recommended).
+    *   `-d /path/to/home`: Specifies the home directory path.
+    *   `-g groupname`: Adds the user to a specific primary group.
+    *   `-G groupname1,groupname2`: Adds the user to additional supplementary groups.
+
+*   **Example:**
+
+    ```bash
+    sudo useradd -m -g developers -G webdev,testers newuser
+    sudo passwd newuser
+    ```
+
+    Creates `newuser`, their home directory, sets the primary group to `developers`, and adds them to the supplementary groups `webdev` and `testers`.
+
+## 2. Creating Groups
+
+*   **`groupadd` command:** Creates new groups.
+
+    ```bash
+    sudo groupadd groupname
+    ```
+
+    Replace `groupname` with the desired group name.
+
+## 3. Managing Permissions
+
+Linux uses read (r), write (w), and execute (x) permissions.
+
+*   **`ls -l`:** Displays file permissions.
+
+    ```bash
+    ls -l
+    ```
+
+    Example output: `-rw-r--r-- 1 user group 1024 Jan 1 00:00 filename`
+
+    The first 10 characters represent permissions:
+
+    *   1st: File type (`-`: file, `d`: directory, `l`: symlink).
+    *   Next 3: Owner permissions.
+    *   Next 3: Group permissions.
+    *   Last 3: Others' permissions.
+
+*   **`chmod` command:** Changes file permissions.
+
+    *   **Symbolic Mode:**
+
+        ```bash
+        chmod u+w filename    # Add write for owner.
+        chmod g-x filename    # Remove execute for group.
+        chmod o=r filename    # Set others to read-only.
+        chmod a+rx filename   # Add read and execute for all.
+        ```
+
+    *   **Octal Mode:**  Use numbers to represent permissions:
+
+        *   `r` = 4
+        *   `w` = 2
+        *   `x` = 1
+        *   `-` = 0
+
+        ```bash
+        chmod 644 filename    # Owner: rw, Group: r, Others: r.
+        chmod 755 filename    # Owner: rwx, Group: rx, Others: rx (common for executables).
+        chmod 700 directoryname # Owner: rwx, Group: no access, Others: no access (secure).
+        ```
+
+*   **`chown` command:** Changes file ownership.
+
+    ```bash
+    sudo chown user:group filename
+    ```
+
+    Replace `user` and `group` with the new owner and group.
+
+*   **Recursive Options:** `-R` applies changes to all files and subdirectories within a directory.
+
+    ```bash
+    sudo chmod -R 755 directoryname
+    sudo chown -R user:group directoryname
+    ```
+
+## 4. Switching Between Accounts
+
+*   **`su` command (Switch User):**
+
+    ```bash
+    su username        # Switch to user (prompts for password).
+    su                 # Switch to root (prompts for root password).
+    su - username      # Switch to user, preserving environment (recommended).
+    exit               # Return to the previous user.
+    ```
+
+*   **`sudo -u` command:** Runs a single command as another user.
+
+    ```bash
+    sudo -u username command
+    ```
+
+    Replace `username` and `command`. Prompts for *your* password.
+
+## Example Scenario
+
+Create a group `projectx`, add user `alice` to it, and give `projectx` write access to `/var/www/projectx`.
+
+```bash
+sudo groupadd projectx
+sudo useradd -m -g projectx alice
+sudo passwd alice
+sudo chown :projectx /var/www/projectx
+sudo chmod g+w /var/www/projectx
